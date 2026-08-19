@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/StudyPilot.Api/StudyPilot.Api.csproj" />
+    <Project Path="src/StudyPilot.Infrastructure/StudyPilot.Infrastructure.csproj" />
+    <Project Path="src/StudyPilot.SharedKernel/StudyPilot.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/">
+    <Project Path="src/Modules/StudyPilot.Modules.Academic/StudyPilot.Modules.Academic.csproj" />
+    <Project Path="src/Modules/StudyPilot.Modules.Identity/StudyPilot.Modules.Identity.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/StudyPilot.Architecture.Tests/StudyPilot.Architecture.Tests.csproj" />
+    <Project Path="tests/StudyPilot.Modules.Identity.Tests/StudyPilot.Modules.Identity.Tests.csproj" />
+  </Folder>
+</Solution>

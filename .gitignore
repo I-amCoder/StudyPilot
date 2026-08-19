@@ -1,0 +1,18 @@
+# Local credentials — never commit
+.env
+.env.*
+!.env.example
+
+# Machine-local agent config (settings.json is shared, settings.local.json is personal)
+.claude/settings.local.json
+
+# IDE
+.vs/
+.idea/
+*.user
+
+# Build output
+bin/
+obj/
+node_modules/
+dist/
