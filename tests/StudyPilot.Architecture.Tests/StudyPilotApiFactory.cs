@@ -21,5 +21,11 @@ public sealed class StudyPilotApiFactory : WebApplicationFactory<Program>
                 // Development configuration enables startup migration for convenience. These
                 // tests assert composition only and must not reach a database.
                 ["Database:MigrateOnStartup"] = "false",
+
+                // Supplied explicitly rather than inherited from appsettings.Development.json, so
+                // composition tests do not silently depend on a developer's local settings.
+                ["Identity:Jwt:Issuer"] = "studypilot-architecture-tests",
+                ["Identity:Jwt:Audience"] = "studypilot-architecture-tests",
+                ["Identity:Jwt:SigningKey"] = "an-architecture-test-signing-key-over-32-chars",
             }));
 }

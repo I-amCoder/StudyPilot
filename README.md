@@ -46,6 +46,29 @@ rewritten after insert.
 Migrations are **not** applied on startup by default (`Database:MigrateOnStartup`). Schema
 changes should be a deliberate step rather than a side effect of a deploy.
 
+## Authentication
+
+JWT bearer tokens (ADR-002). Endpoints are **secure by default**: a fallback authorization policy
+requires an authenticated user, so an endpoint added without authorization metadata fails closed
+rather than being exposed. Public endpoints opt out explicitly with `AllowAnonymous`.
+
+Passwords are hashed with the ASP.NET Core hasher (PBKDF2, per-password salt). Every account
+carries a security stamp that is embedded in issued tokens and re-checked on each request, so
+changing a password or deactivating an account revokes tokens already handed out. A rehash after
+a successful login deliberately does *not* roll the stamp, since the credentials have not changed.
+
+Authentication failures are deliberately indistinguishable — unknown account, wrong password and
+deactivated account all return the same error, and an unknown account still performs a hash
+verification so timing does not reveal which addresses are registered.
+
+The signing key has no default. A missing or short key stops startup rather than silently
+weakening every token. Configure `Identity:Jwt` per environment; secrets handling is SP-142.
+
+| Endpoint | Auth |
+|---|---|
+| `POST /api/identity/login` | anonymous — returns an access token |
+| `GET /api/identity/me` | bearer token required |
+
 ## Running
 
 Start the local database first:
@@ -73,8 +96,8 @@ dotnet run --project src/StudyPilot.Api
 dotnet test StudyPilot.slnx
 ```
 
-Persistence tests run against a real PostgreSQL container via Testcontainers, so Docker must be
-running. The infrastructure under test is PostgreSQL-specific — schemas, `xmin` concurrency — and
+Persistence and authentication tests run against a real PostgreSQL container via Testcontainers,
+so Docker must be running. The infrastructure under test is PostgreSQL-specific — schemas, `xmin` concurrency — and
 an in-memory provider would not exercise it.
 
 ## Jira workflow

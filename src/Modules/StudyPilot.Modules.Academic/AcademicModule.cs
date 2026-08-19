@@ -24,6 +24,7 @@ public sealed class AcademicModule : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/academic/ping", () => Results.Ok(new { module = "Academic" }))
+            .AllowAnonymous()
             .WithTags("Academic");
 
         return endpoints;
