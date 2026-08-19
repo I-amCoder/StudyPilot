@@ -1,0 +1,22 @@
+# Local development dependencies. Not a production topology.
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: studypilot-postgres
+    environment:
+      POSTGRES_DB: studypilot
+      POSTGRES_USER: studypilot
+      # Local-only credential. Real environments supply the connection string out of band (SP-142).
+      POSTGRES_PASSWORD: studypilot
+    ports:
+      - "5432:5432"
+    volumes:
+      - studypilot-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studypilot -d studypilot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  studypilot-postgres:

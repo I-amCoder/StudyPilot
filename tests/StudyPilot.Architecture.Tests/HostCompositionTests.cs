@@ -12,8 +12,8 @@ namespace StudyPilot.Architecture.Tests;
 /// Verifies the API host actually composes every module it ships with. A module that exists but
 /// is never registered is the silent failure this guards against.
 /// </summary>
-public class HostCompositionTests(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+public class HostCompositionTests(StudyPilotApiFactory factory)
+    : IClassFixture<StudyPilotApiFactory>
 {
     private static readonly Assembly[] ModuleAssemblies =
         [typeof(IdentityModule).Assembly, typeof(AcademicModule).Assembly];
@@ -49,9 +49,11 @@ public class HostCompositionTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
-    public async Task Health_endpoint_reports_healthy()
+    public async Task Liveness_endpoint_reports_healthy_without_a_database()
     {
-        var response = await factory.CreateClient().GetAsync("/health");
+        // Liveness must not depend on the database; readiness is covered by the infrastructure
+        // integration tests, which run against a real PostgreSQL container.
+        var response = await factory.CreateClient().GetAsync("/health/live");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("Healthy", await response.Content.ReadAsStringAsync());

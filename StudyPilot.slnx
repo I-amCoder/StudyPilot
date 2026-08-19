@@ -10,6 +10,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/StudyPilot.Architecture.Tests/StudyPilot.Architecture.Tests.csproj" />
+    <Project Path="tests/StudyPilot.Infrastructure.Tests/StudyPilot.Infrastructure.Tests.csproj" />
     <Project Path="tests/StudyPilot.Modules.Identity.Tests/StudyPilot.Modules.Identity.Tests.csproj" />
   </Folder>
 </Solution>

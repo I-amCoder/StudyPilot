@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StudyPilot.Infrastructure.Modules;
+using StudyPilot.Infrastructure.Persistence;
+using StudyPilot.Modules.Academic.Persistence;
 
 namespace StudyPilot.Modules.Academic;
 
@@ -17,7 +19,7 @@ public sealed class AcademicModule : IModule
     public string Name => "Academic";
 
     public IServiceCollection RegisterServices(IServiceCollection services, IConfiguration configuration) =>
-        services;
+        services.AddModuleDbContext<AcademicDbContext>(AcademicDbContext.SchemaName);
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {

@@ -32,7 +32,29 @@ These are asserted by `StudyPilot.Architecture.Tests`, not left to code review:
 Adding a module means implementing `IModule` and registering it in `Program.cs`. The
 `/modules` endpoint reports what the running host actually composed.
 
+## Persistence
+
+PostgreSQL is the system of record (ADR-006). Each module owns its own schema — `identity`,
+`academic` — so module boundaries hold in the database as well as in code, and each module's
+migration history lives inside its own schema.
+
+Aggregate roots automatically get PostgreSQL's `xmin` as an optimistic-concurrency token, so a
+concurrent write fails loudly instead of silently discarding the earlier one. Entities
+implementing `IAuditable` are timestamped by the persistence layer, and `CreatedAtUtc` cannot be
+rewritten after insert.
+
+Migrations are **not** applied on startup by default (`Database:MigrateOnStartup`). Schema
+changes should be a deliberate step rather than a side effect of a deploy.
+
 ## Running
+
+Start the local database first:
+
+```bash
+docker compose up -d
+```
+
+Then the API:
 
 ```bash
 dotnet run --project src/StudyPilot.Api
@@ -40,7 +62,8 @@ dotnet run --project src/StudyPilot.Api
 
 | Endpoint | Purpose |
 |---|---|
-| `/health` | Liveness |
+| `/health/live` | Liveness — runs no checks; a database outage must not trigger a restart |
+| `/health/ready` | Readiness — includes every module's database check |
 | `/modules` | Composed module set |
 | `/openapi/v1.json` | OpenAPI document (development only) |
 
@@ -49,6 +72,10 @@ dotnet run --project src/StudyPilot.Api
 ```bash
 dotnet test StudyPilot.slnx
 ```
+
+Persistence tests run against a real PostgreSQL container via Testcontainers, so Docker must be
+running. The infrastructure under test is PostgreSQL-specific — schemas, `xmin` concurrency — and
+an in-memory provider would not exercise it.
 
 ## Jira workflow
 
