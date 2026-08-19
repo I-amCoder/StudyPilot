@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StudyPilot.Infrastructure.Modules;
+using StudyPilot.Infrastructure.Persistence;
+using StudyPilot.Modules.Identity.Persistence;
 
 namespace StudyPilot.Modules.Identity;
 
@@ -17,7 +19,7 @@ public sealed class IdentityModule : IModule
     public string Name => "Identity";
 
     public IServiceCollection RegisterServices(IServiceCollection services, IConfiguration configuration) =>
-        services;
+        services.AddModuleDbContext<IdentityDbContext>(IdentityDbContext.SchemaName);
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
